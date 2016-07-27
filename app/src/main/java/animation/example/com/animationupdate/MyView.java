@@ -1,6 +1,8 @@
 package animation.example.com.animationupdate;
 
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,14 +11,13 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-/**
- * Created by slience on 2016/7/27.
- */
+
 public class MyView extends View {
 
     public static final float RADIUS = 100f;
     private Paint mPaint;
     private Point currentPoint;
+    private String color;
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -59,8 +60,22 @@ public class MyView extends View {
                 invalidate();
             }
         });
-        valueAnimator.setDuration(5000);
-        valueAnimator.start();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofObject(this,"color",new ColorEvaluator(),
+                "#FF0000","#0000FF");
+        AnimatorSet set = new AnimatorSet();
+        set.play(valueAnimator).with(objectAnimator);
+        set.setDuration(5000);
+        set.start();
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+        mPaint.setColor(Color.parseColor(color));
+        invalidate();
     }
 
 }
